@@ -1,0 +1,42 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Python: Debug Server",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}/server.py",
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "Chrome: Launch Browser",
+      "type": "chrome",
+      "request": "launch",
+      "url": "http://localhost:8000",
+      "webRoot": "${workspaceFolder}"
+    },
+    {
+      "name": "Firefox: Launch Browser",
+      "type": "firefox",
+      "request": "launch",
+      "url": "http://localhost:8000",
+      "webRoot": "${workspaceFolder}"
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Full Stack: Server & Chrome",
+      "configurations": [
+        "Python: Debug Server",
+        "Chrome: Launch Browser"
+      ]
+    },
+    {
+      "name": "Full Stack: Server & Firefox",
+      "configurations": [
+        "Python: Debug Server",
+        "Firefox: Launch Browser"
+      ]
+    }
+  ]
+}

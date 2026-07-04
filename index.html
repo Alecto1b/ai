@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Build with AI | Antigravity Hero Wave</title>
+  <meta name="description" content="The AI Fullstack Engineer. Build prototypes, apps, and websites with interactive animated wave effects.">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="style.css?v=2">
+  
+  <!-- Library Scripts (Global UMD versions) -->
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/CopyShader.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/ShaderPass.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+
+  <!-- Animated Hero Wave Section -->
+  <section class="hero-section" aria-label="Animated hero">
+    
+    <!-- Mini Navbar -->
+    <header class="mini-navbar" id="navbar">
+      <div class="nav-container">
+        <!-- Logo -->
+        <div class="logo">
+          <span class="logo-dot top"></span>
+          <span class="logo-dot left"></span>
+          <span class="logo-dot right"></span>
+          <span class="logo-dot bottom"></span>
+        </div>
+
+        <!-- Desktop Navigation -->
+        <nav class="desktop-nav">
+          <a href="#1" class="nav-link">
+            <span class="nav-link-inner">
+              <span>Manifesto</span>
+              <span>Manifesto</span>
+            </span>
+          </a>
+          <a href="#2" class="nav-link">
+            <span class="nav-link-inner">
+              <span>Careers</span>
+              <span>Careers</span>
+            </span>
+          </a>
+          <a href="#3" class="nav-link">
+            <span class="nav-link-inner">
+              <span>Discover</span>
+              <span>Discover</span>
+            </span>
+          </a>
+        </nav>
+
+        <!-- Desktop Auth Buttons -->
+        <div class="desktop-auth">
+          <button class="btn btn-login">Login</button>
+          <div class="signup-wrapper">
+            <div class="signup-glow"></div>
+            <button class="btn btn-signup">Sign up</button>
+          </div>
+        </div>
+
+        <!-- Mobile Menu Toggle Button -->
+        <button class="mobile-toggle" id="menuToggle" aria-label="Open Menu">
+          <svg class="hamburger-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+          </svg>
+          <svg class="close-icon hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Mobile Navigation Drawer -->
+      <div class="mobile-nav hidden" id="mobileNav">
+        <nav class="mobile-links">
+          <a href="#1">Manifesto</a>
+          <a href="#2">Careers</a>
+          <a href="#3">Discover</a>
+        </nav>
+        <div class="mobile-auth">
+          <button class="btn btn-login">LogIn</button>
+          <button class="btn btn-signup">Signup</button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Center Content Overlay -->
+    <div class="content-overlay">
+      <div class="text-container">
+        <h1 class="hero-title">Build with AI.</h1>
+        <p class="hero-subtitle">The AI Fullstack Engineer. Build prototypes, apps, and websites</p>
+        
+        <form class="prompt-form" id="promptForm">
+          <div class="textarea-wrapper">
+            <div class="border-gradient-overlay"></div>
+            <textarea 
+              id="promptInput" 
+              rows="5" 
+              class="prompt-textarea" 
+              placeholder="Describe what you want to create..."
+              autocomplete="off"
+            ></textarea>
+            
+            <button type="submit" class="submit-btn" aria-label="Generate">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="arrow-icon">
+                <path d="M7 17L17 7"></path>
+                <path d="M7 7h10v10"></path>
+              </svg>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Target Div for Three.js Canvas -->
+    <div id="waveCanvas"></div>
+
+  </section>
+
+  <!-- Floating Chat Toggle Button -->
+  <button id="chatToggle" class="chat-toggle-btn" aria-label="Toggle Chat Assistant">
+    <div class="chat-toggle-glow"></div>
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+    </svg>
+  </button>
+
+  <!-- Chat Assistant Container -->
+  <div class="chat-assistant-container hidden" id="chatAssistant">
+    <!-- Chat Header -->
+    <div class="chat-header">
+      <div class="chat-header-inner">
+        <div class="chat-title">
+          <span class="chat-status-dot" id="chatStatusDot"></span>
+          <span>Cumlaude</span>
+        </div>
+        <div class="chat-header-actions">
+          <select id="chatModeSelect" class="chat-mode-select">
+            <option value="standard">Standard Mode</option>
+            <option value="planning">Planning Mode</option>
+            <option value="deep_research">Deep Research</option>
+          </select>
+          <button class="chat-icon-btn" id="newChatBtn" title="New Conversation" aria-label="New Conversation">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+          </button>
+          <button class="chat-icon-btn" id="historyBtn" title="Conversation History" aria-label="Conversation History">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
+          </button>
+          <button class="chat-icon-btn" id="clearHistoryBtn" title="Clear Current Chat" aria-label="Clear Current Chat">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="3 6 5 6 21 6"></polyline>
+              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+              <line x1="10" y1="11" x2="10" y2="17"></line>
+              <line x1="14" y1="11" x2="14" y2="17"></line>
+            </svg>
+          </button>
+          <button class="chat-icon-btn" id="closeChatBtn" title="Close Chat" aria-label="Close Chat">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Chat Body (Message logs) -->
+    <div class="chat-body" id="chatBody"></div>
+
+    <!-- Chat Footer (Inputs) -->
+    <div class="chat-footer">
+      <div class="chat-footer-inner">
+        <form id="chatForm">
+          <div class="chat-input-wrapper">
+            <textarea id="chatInput" class="chat-textarea" placeholder="Type a message..." rows="1"></textarea>
+            <button type="submit" class="chat-submit-btn" id="chatSubmitBtn" aria-label="Send">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px;">
+                <line x1="22" y1="2" x2="11" y2="13"></line>
+                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+              </svg>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating Conversation History Modal -->
+  <div class="history-modal-overlay" id="historyModal">
+    <div class="history-card">
+      <div class="history-card-header">
+        <h3>History</h3>
+        <button class="history-close-btn" id="historyModalCloseBtn">&times;</button>
+      </div>
+      <div class="history-card-body" id="historyCardListContainer">
+        <!-- History items dynamically rendered -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Sliding Conversation History Sidebar -->
+  <div class="history-sidebar-overlay" id="historySidebarOverlay"></div>
+  <div class="history-sidebar" id="historySidebar">
+    <div class="history-sidebar-header">
+      <h3>History</h3>
+      <button class="history-close-btn" id="historySidebarCloseBtn">&times;</button>
+    </div>
+    <div class="history-sidebar-body" id="historySidebarListContainer">
+      <!-- History items dynamically rendered -->
+    </div>
+  </div>
+
+  <!-- Custom Warning Modal for CORS / Run Instructions -->
+  <div class="warning-modal-overlay" id="warningModal">
+    <div class="warning-modal-card">
+      <div class="warning-modal-header">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+        </svg>
+        <h3>Peringatan: Jalankan Aplikasi Menggunakan Python Server</h3>
+      </div>
+      <div class="warning-modal-body">
+        <p>Anda membuka file HTML secara langsung (<code>file://</code>). Browser memblokir request API langsung dari file lokal karena kebijakan keamanan CORS (Cross-Origin Resource Sharing).</p>
+        
+        <div class="warning-options-container">
+          <div class="warning-option-box">
+            <h4>Opsi A: Melalui VS Code (Sangat Direkomendasikan)</h4>
+            <ol>
+              <li>Buka proyek di editor VS Code Anda.</li>
+              <li>Tekan tombol shortcut <code>Ctrl + Shift + D</code> untuk membuka panel Run & Debug.</li>
+              <li>Pilih menu dropdown: <strong>Full Stack: Server & Firefox</strong> (atau Chrome).</li>
+              <li>Tekan tombol <strong>F5</strong> di keyboard Anda.</li>
+            </ol>
+          </div>
+          
+          <div class="warning-option-box">
+            <h4>Opsi B: Melalui Terminal</h4>
+            <ol>
+              <li>Buka terminal Anda di direktori proyek ini.</li>
+              <li>Jalankan server menggunakan perintah: <code>python server.py</code></li>
+              <li>Buka browser dan buka alamat: <strong>http://localhost:8000</strong></li>
+            </ol>
+          </div>
+        </div>
+      </div>
+      <div class="warning-modal-footer">
+        <button class="warning-modal-btn" id="closeWarningBtn">Tutup Halaman</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- JS Script -->
+  <script src="app.js"></script>
+</body>
+</html>
